@@ -1,0 +1,13 @@
+diff --git a/includes/class-freemius.php b/includes/class-freemius.php
+index fc5958b..a8170b9 100755
+--- a/includes/class-freemius.php
++++ b/includes/class-freemius.php
+@@ -7233,7 +7233,7 @@
+                             return;
+                         }
+ 
+-                        if ( $this->is_plugin_new_install() || $this->is_only_premium() ) {
++                        if ( ! $this->is_addon() && ( $this->is_plugin_new_install() || $this->is_only_premium() ) ) {
+                             if ( ! $this->_anonymous_mode ) {
+                                 // Show notice for new plugin installations.
+                                 $this->_admin_notices->add(
