@@ -1,0 +1,169 @@
+diff --git a/includes/entities/class-fs-pricing.php b/includes/entities/class-fs-pricing.php
+index 5404fe5..5ee563e 100755
+--- a/includes/entities/class-fs-pricing.php
++++ b/includes/entities/class-fs-pricing.php
+@@ -154,4 +154,27 @@
+         function is_usd() {
+             return ( 'usd' === $this->currency );
+         }
+-	}
+\ No newline at end of file
++
++        /**
++         * Get currency symbol from currency code.
++         *
++         * @author @invisnet
++         *
++         * @param $currency Currency code.
++         *
++         * @return string|null
++         */
++        static function currency_symbol( $currency ) {
++            switch ( $currency ) {
++                case 'usd':
++                    return '$';
++                case 'gbp':
++                    return '&pound;';
++                case 'eur':
++                    return '&euro;';
++                default:
++                    return null;
++            }
++        }
++	}
++
+diff --git a/includes/fs-plugin-info-dialog.php b/includes/fs-plugin-info-dialog.php
+index 2ad77ae..a6ecfc1 100755
+--- a/includes/fs-plugin-info-dialog.php
++++ b/includes/fs-plugin-info-dialog.php
+@@ -54,6 +54,24 @@
+          */
+         private $status;
+ 
++        /**
++         * The default currency of the plugin or addon.
++         *
++         * @author @invisnet
++         *
++         * @var string
++         */
++        private $default_currency;
++
++        /**
++         * The currency symbol for the default currency.
++         *
++         * @author @invisnet
++         *
++         * @var string
++         */
++        private $currency_symbol;
++
+         function __construct( Freemius $fs ) {
+             $this->_fs = $fs;
+ 
+@@ -119,6 +137,10 @@
+             $has_free_plan = false;
+             $has_paid_plan = false;
+ 
++            // Get the default currency in case it's not usd.
++            $this->default_currency = $this->_fs->apply_filters( 'default_currency', 'usd' );
++            $this->currency_symbol  = FS_Pricing::currency_symbol( $this->default_currency );
++
+             // Load add-on pricing.
+             $has_pricing  = false;
+             $has_features = false;
+@@ -150,12 +172,11 @@
+                             foreach ( $pricing as $prices ) {
+                                 $prices = new FS_Pricing( $prices );
+ 
+-                                if ( ! $prices->is_usd() ) {
++                                if ( $this->default_currency !== $prices->currency ) {
+                                     /**
+-                                     * Skip non-USD pricing.
++                                     * Skip pricings not in the default currency.
+                                      *
+-                                     * @author Leo Fajardo (@leorw)
+-                                     * @since 2.3.1
++                                     * @author invisnet
+                                      */
+                                     continue;
+                                 }
+@@ -342,8 +363,9 @@
+ 
+                 if ( $has_features ) {
+                     $view_vars                  = array(
+-                        'plans'  => $plans,
+-                        'plugin' => $selected_addon,
++                        'plans'           => $plans,
++                        'plugin'          => $selected_addon,
++                        'currency_symbol' => $this->currency_symbol
+                     );
+                     $data->sections['features'] = fs_get_template( '/plugin-info/features.php', $view_vars );
+                 }
+@@ -421,7 +443,7 @@
+                 $price_tag = $pricing->lifetime_price;
+             }
+ 
+-            return '$' . $price_tag;
++            return $this->currency_symbol . $price_tag;
+         }
+ 
+         /**
+@@ -1190,7 +1212,7 @@
+                                                     }
+ 
+                                                     if (!multipleLicenses && 1 == pricing.licenses) {
+-                                                        return '$' + pricing.price + priceCycle;
++                                                        return '<?php echo $this->currency_symbol ?>' + pricing.price + priceCycle;
+                                                     }
+ 
+                                                     return _formatLicensesTitle(pricing) + ' - <var class="fs-price">$' + pricing.price + priceCycle + '</var>';
+@@ -1306,8 +1328,8 @@
+                                     <?php endif ?>
+                                 </div>
+                             </div>
+-                            </div>
+                         <?php endforeach ?>
++                        </div>
+                     <?php endif ?>
+                 <?php endif ?>
+                 <div>
+diff --git a/templates/add-ons.php b/templates/add-ons.php
+index bb9d763..4813297 100755
+--- a/templates/add-ons.php
++++ b/templates/add-ons.php
+@@ -25,6 +25,9 @@
+     $is_data_debug_mode = $fs->is_data_debug_mode();
+     $is_whitelabeled    = $fs->is_whitelabeled();
+ 
++    $default_currency = $fs->apply_filters( 'default_currency', 'usd' );
++    $currency_symbol  = FS_Pricing::currency_symbol( $default_currency );
++
+ 	/**
+ 	 * @var FS_Plugin[]
+ 	 */
+@@ -149,12 +152,11 @@
+ 									foreach ( $plan->pricing as $pricing ) {
+                                         $pricing = new FS_Pricing( $pricing );
+ 
+-                                        if ( ! $pricing->is_usd() ) {
++                                        if ( $default_currency !== $pricing->currency ) {
+                                             /**
+-                                             * Skip non-USD pricing.
++                                             * Skip pricings not in the default currency.
+                                              *
+-                                             * @author Leo Fajardo (@leorw)
+-                                             * @since 2.3.1
++                                             * @author @invisnet
+                                              */
+                                             continue;
+                                         }
+@@ -245,7 +247,7 @@
+ 											if ($has_free_plan)
+ 												$descriptors[] = fs_text_inline( 'Free', 'free', $slug );
+ 											if ($has_paid_plan && $price > 0)
+-												$descriptors[] = '$' . number_format( $price, 2 );
++												$descriptors[] = $currency_symbol . number_format( $price, 2 );
+ 											if ($has_trial)
+ 												$descriptors[] = fs_text_x_inline( 'Trial', 'trial period',  'trial', $slug );
+ 
