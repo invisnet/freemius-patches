@@ -1,0 +1,13 @@
+diff --git a/includes/fs-plugin-info-dialog.php b/includes/fs-plugin-info-dialog.php
+index 2ad77ae..46e7d64 100755
+--- a/includes/fs-plugin-info-dialog.php
++++ b/includes/fs-plugin-info-dialog.php
+@@ -127,7 +127,7 @@
+             $result = $this->_fs->get_api_plugin_scope()->get( $this->_fs->add_show_pending( "/addons/{$selected_addon->id}/pricing.json?type=visible" ) );
+ 
+             if ( ! isset( $result->error ) ) {
+-                $plans = $result->plans;
++                $plans = array_reverse( $result->plans );
+ 
+                 if ( is_array( $plans ) ) {
+                     for ( $i = 0, $len = count( $plans ); $i < $len; $i ++ ) {
