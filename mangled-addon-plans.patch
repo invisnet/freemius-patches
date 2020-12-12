@@ -1,0 +1,14 @@
+diff --git a/includes/fs-plugin-info-dialog.php b/includes/fs-plugin-info-dialog.php
+index 2ad77ae..4781e22 100755
+--- a/includes/fs-plugin-info-dialog.php
++++ b/includes/fs-plugin-info-dialog.php
+@@ -1306,8 +1306,8 @@
+                                     <?php endif ?>
+                                 </div>
+                             </div>
+-                            </div>
+                         <?php endforeach ?>
++                        </div>
+                     <?php endif ?>
+                 <?php endif ?>
+                 <div>

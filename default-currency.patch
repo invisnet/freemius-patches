@@ -118,16 +118,6 @@ index 2ad77ae..a6ecfc1 100755
                                                      }
  
                                                      return _formatLicensesTitle(pricing) + ' - <var class="fs-price">$' + pricing.price + priceCycle + '</var>';
-@@ -1306,8 +1328,8 @@
-                                     <?php endif ?>
-                                 </div>
-                             </div>
--                            </div>
-                         <?php endforeach ?>
-+                        </div>
-                     <?php endif ?>
-                 <?php endif ?>
-                 <div>
 diff --git a/templates/add-ons.php b/templates/add-ons.php
 index bb9d763..4813297 100755
 --- a/templates/add-ons.php
