@@ -157,3 +157,32 @@ index bb9d763..4813297 100755
  											if ($has_trial)
  												$descriptors[] = fs_text_x_inline( 'Trial', 'trial period',  'trial', $slug );
  
+diff --git a/templates/plugin-info/features.php b/templates/plugin-info/features.php
+index b3d0fc8..abe86e3 100644
+--- a/templates/plugin-info/features.php
++++ b/templates/plugin-info/features.php
+@@ -19,6 +19,8 @@
+ 
+ 	$plans = $VARS['plans'];
+ 
++	$currency_symbol = $VARS['currency_symbol'];
++
+ 	$features_plan_map = array();
+ 	foreach ( $plans as $plan ) {
+ 		if (!empty($plan->features) && is_array($plan->features)) {
+@@ -77,11 +79,11 @@
+ 									 */
+ 									if ( 1 == $pricing->licenses ) {
+ 										if ( $pricing->has_annual() ) {
+-											echo "\${$pricing->annual_price} / " . fs_esc_html_x_inline( 'year', 'as annual period', 'year', $plugin->slug );
++											echo "{$currency_symbol}{$pricing->annual_price} / " . fs_esc_html_x_inline( 'year', 'as annual period', 'year', $plugin->slug );
+ 										} else if ( $pricing->has_monthly() ) {
+-											echo "\${$pricing->monthly_price} / " . fs_esc_html_x_inline( 'mo', 'as monthly period', 'mo', $plugin->slug );
++											echo "{$currency_symbol}{$pricing->monthly_price} / " . fs_esc_html_x_inline( 'mo', 'as monthly period', 'mo', $plugin->slug );
+ 										} else {
+-											echo "\${$pricing->lifetime_price}";
++											echo "{$currency_symbol}{$pricing->lifetime_price}";
+ 										}
+ 									}
+ 								}
+
